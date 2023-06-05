@@ -4,6 +4,7 @@ CREATE TYPE entry_type AS ENUM ('file', 'directory', 'link', 'other');
 
 CREATE TABLE imports (
   import_id BIGINT PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY,
+  tree_id BIGINT NOT NULL,
   started_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
   finished_at TIMESTAMP WITH TIME ZONE,
   entry_count BIGINT,
@@ -13,13 +14,15 @@ CREATE TABLE imports (
 );
 
 CREATE TABLE entries (
+  tree_id BIGINT NOT NULL,
   path TEXT NOT NULL,
   type entry_type NOT NULL,
   bytes BIGINT NOT NULL,
   mtime TIMESTAMP WITH TIME ZONE NOT NULL,
   first_discovery_at BIGINT NOT NULL REFERENCES imports (import_id),
-  last_change_at BIGINT NOT NULL REFERENCES imports(import_id)
-);
+  last_change_at BIGINT NOT NULL REFERENCES imports(import_id),
+  PRIMARY KEY (tree_id, path)
+) PARTITION BY LIST (tree_id);
 
 -- TODO: Index on entries for MERGE
 

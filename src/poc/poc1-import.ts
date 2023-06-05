@@ -35,6 +35,6 @@ const sourceDirectory = env('IMPORT_PATH');
             );
         }, provider);
         await importOutbox.recover();
-        await importFiles(provider, fileSource, logger, importOutbox);
+        await importFiles(provider, 1, fileSource, logger, importOutbox);
     });
 })();
