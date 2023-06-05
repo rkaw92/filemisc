@@ -21,6 +21,8 @@ CREATE TABLE entries (
   last_change_at BIGINT NOT NULL REFERENCES imports(import_id)
 );
 
+-- TODO: Index on entries for MERGE
+
 CREATE TABLE outbox (
   id TEXT NOT NULL PRIMARY KEY,
   name TEXT NOT NULL,
