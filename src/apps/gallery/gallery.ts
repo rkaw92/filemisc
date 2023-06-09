@@ -128,15 +128,21 @@ async function importGalleryConfigs(import_id: string, tree_id: number, trx: Kne
             name: rc.name ?? path.basename(rootPath),
             description: rc.description ?? null,
         };
-        await trx('galleries')
+        const [{ gallery_id }] = await trx('galleries')
             .withSchema(GALLERY)
-            .insert(newConfig).onConflict('root_path').merge();
+            .insert(newConfig).onConflict('root_path').merge()
+            .returning('gallery_id');
+        await trx('access')
+            .withSchema(GALLERY)
+            .where({ gallery_id })
+            .delete();
+        await trx('access')
+            .withSchema(GALLERY)
+            .insert(rc.accounts.map((account) => ({ gallery_id, account })));
         // Mark this gallery as needing rebuild:
         directoryAccumulator.add(rootPath);
     }
 }
-
-// TODO: Detect removals of galleries, too!
 
 async function rebuildPictureSequences(import_id: string, tree_id: number, trx: Knex, directoriesNeedingRebuild: Set<string>) {
     for (const root_path of directoriesNeedingRebuild) {
@@ -225,8 +231,10 @@ const handleImport: MessageHandler = async (msg, trx) => {
         await importImages(import_id, tree_id, trx, directoriesWithChanges);
         await removeDeletedImages(import_id, tree_id, trx, directoriesWithChanges);
         await importGalleryConfigs(import_id, tree_id, trx, directoriesWithChanges);
+        // TODO: Delete old galleries if .galleryrc is gone.
         await rebuildPictureSequences(import_id, tree_id, trx, directoriesWithChanges);
         await generateAllMissingThumbnails(trx);
+        // TODO: Clean up orphaned thumbnails.
     } catch (error) {
         // HACK: Make debugging easier instead of spinning on the message.
         console.error(error);

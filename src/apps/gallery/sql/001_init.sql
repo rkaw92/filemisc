@@ -19,6 +19,7 @@ CREATE INDEX idx_images_sha256 ON gallery.images (sha256);
 
 CREATE TABLE gallery.galleries (
     gallery_id BIGINT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    tree_id INTEGER NOT NULL,
     root_path TEXT NOT NULL,
     name TEXT NOT NULL,
     description TEXT,
