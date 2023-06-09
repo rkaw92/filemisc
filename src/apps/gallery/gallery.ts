@@ -136,9 +136,11 @@ async function importGalleryConfigs(import_id: string, tree_id: number, trx: Kne
             .withSchema(GALLERY)
             .where({ gallery_id })
             .delete();
-        await trx('access')
-            .withSchema(GALLERY)
-            .insert(rc.accounts.map((account) => ({ gallery_id, account })));
+        if (rc.accounts.length > 0) {
+            await trx('access')
+                .withSchema(GALLERY)
+                .insert(rc.accounts.map((account) => ({ gallery_id, account })));
+        }
         // Mark this gallery as needing rebuild:
         directoryAccumulator.add(rootPath);
     }
