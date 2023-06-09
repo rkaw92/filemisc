@@ -7,7 +7,8 @@ import { traverse } from "../traverse";
 import { env } from "../utils/env";
 import { borrow } from "../utils/pg";
 import { Admin, ProducerBuilder } from 'pgstream';
-import { PendingMessage } from "pgstream/dist/PendingMessage";
+import { PendingMessage } from "pgstream";
+import { start } from "../apps/gallery/gallery";
 
 const importPool = new Pool({
     connectionString: env('POSTGRES_URL'),

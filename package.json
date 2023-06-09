@@ -19,6 +19,7 @@
     "node": "20.0.0"
   },
   "devDependencies": {
+    "@types/exif-reader": "^1.0.0",
     "@types/node": "^18.15.12",
     "@types/pg": "^8.6.6",
     "@types/pg-copy-streams": "^1.2.2",
@@ -26,11 +27,15 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
+    "exif-reader": "^1.2.0",
     "fastify": "^4.15.0",
     "knex": "^2.4.2",
+    "p-map": "^4.0.0",
     "pg": "^8.10.0",
     "pg-copy-streams": "^6.0.5",
-    "pgstream": "^0.1.0",
-    "pino": "^8.11.0"
+    "pgstream": "^0.1.2",
+    "pino": "^8.14.1",
+    "sharp": "^0.32.1",
+    "zod": "^3.21.4"
   }
 }
